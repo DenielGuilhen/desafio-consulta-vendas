@@ -1,14 +1,18 @@
 package com.devsuperior.dsmeta.controllers;
 
+import com.devsuperior.dsmeta.dto.SaleSallerDTO;
+import com.devsuperior.dsmeta.dto.SallerMinDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.devsuperior.dsmeta.dto.SaleMinDTO;
 import com.devsuperior.dsmeta.services.SaleService;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping(value = "/sales")
@@ -24,14 +28,19 @@ public class SaleController {
 	}
 
 	@GetMapping(value = "/report")
-	public ResponseEntity<?> getReport() {
-		// TODO
-		return null;
+	public Page<SaleSallerDTO> findSalesWithSellerName
+			(@RequestParam(name = "name", defaultValue = "") String name,
+			 @RequestParam(name = "minDate", required = false)
+			 @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate minDate,
+			 @RequestParam(name = "maxDate", required = false)
+			 @DateTimeFormat(pattern = "yyyy-MM-dd")LocalDate maxDate,
+			 Pageable pageable) {
+
+		return service.findSalesWithSellerName(name, minDate, maxDate, pageable);
 	}
 
 	@GetMapping(value = "/summary")
-	public ResponseEntity<?> getSummary() {
-		// TODO
-		return null;
+	public Page<SallerMinDTO> findAmountWithSellerName(Pageable pageable) {
+		return service.findAmountWithSellerName(pageable);
 	}
 }
